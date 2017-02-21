@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: ce582378153f72c4f960b26a65ee13d1
+timeCreated: 1487534631
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Dax-Regular
+  fontNames:
+  - Dax-Regular
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
