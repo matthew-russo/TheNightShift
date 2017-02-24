@@ -4,71 +4,76 @@ using UnityEngine;
 
 public class SandwichMonitor : MonoBehaviour
 {
-    private int sandwichParts;
-    public int targetParts;
-    public int correctCount;
+    private float sandwichParts;
+    public float targetParts;
+    public float correctCount;
+    public ComputerResponse _computerResponse;
+    public CustomerHappiness _customerHappiness;
 
     public RecipeGenerator recipeGenerator;
 
     public string recipe;
 
-    public List<string> currentSandwich = new List<string>();
+    public List<GameObject> currentSandwich = new List<GameObject>();
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-	    if (StateMachine.Instance.currentGameState == StateMachine.State.Sandwich)
-	    {
-	        recipe = recipeGenerator.Recipe;
+    // Use this for initialization
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (StateMachine.Instance.currentGameState == StateMachine.State.Sandwich)
+        {
+            recipe = recipeGenerator.Recipe;
             targetParts = recipeGenerator.targetParts;
             if (currentSandwich.Count == targetParts)
             {
-                Debug.Log("Sandwich Made");
-                if (CheckSandwich())
-                {
-                    StateMachine.Instance.currentGameState = StateMachine.State.Dialog;
-                    Debug.Log("success");
-                }
-                else
-                {
-                    StateMachine.Instance.currentGameState = StateMachine.State.Dialog;
-                    Debug.Log("failure");
-                }
+                _customerHappiness.customerUnhappy = false;
+                StateMachine.Instance.currentGameState = StateMachine.State.Dialog;
+                _computerResponse.EvaluateSandwich(CheckSandwich());
+                CameraCoroutines.Instance.startCameraToCustomer = true;
             }
         }
-	}
+    }
 
-    private bool CheckSandwich()
+    private float CheckSandwich()
     {
         string Output = "";
         for (int i = 0; i < currentSandwich.Count; i++)
         {
             Output += currentSandwich[i];
             Output += ", ";
-            if (recipe.Contains(currentSandwich[i]))
+            if (recipe.Contains(currentSandwich[i].name))
             {
                 correctCount++;
             }
+            //Destroy(currentSandwich[i]);
+            //Debug.Log(currentSandwich[i].name);
+            //currentSandwich[i].GetComponent<Draggable>().ReturnToPool();
+            currentSandwich[i].transform.position = currentSandwich[i].GetComponent<Draggable>()._originPostion;
         }
-        Debug.Log("RECIPE " + recipe);
-        Debug.Log("OUTPUT " +Output);
-        //foreach (string item in currentSandwich)
-        //{
-        //    currentSandwich.Remove(item);
-        //}
-        if (correctCount == targetParts)
+        currentSandwich.Clear();
+        float ratio = correctCount / targetParts;
+        correctCount = 0;
+        return ratio;
+    }
+
+    private void OnTriggerEnter(Collider col)
+    {
+        if (col.GetComponent<Draggable>() != null)
         {
-            return true;
+            col.GetComponent<Draggable>().inTriggerArea = true;
         }
-        else
+    }
+
+    private void OnTriggerExit(Collider col)
+    {
+        if (col.GetComponent<Draggable>() != null)
         {
-            return false;
+            col.GetComponent<Draggable>().inTriggerArea = false;
         }
-        
     }
 }

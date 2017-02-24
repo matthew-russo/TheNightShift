@@ -16,10 +16,11 @@ public class PooledObject : MonoBehaviour {
 
 	public void ReturnToPool () {
 		if (Pool) {
+            Debug.Log("Added to Pool");
 			Pool.AddObject(this);
 		}
 		else {
-			Debug.Log("I die!");
+			Debug.Log("Destroyed");
 			Destroy(gameObject);
 		}
 	}

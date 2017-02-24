@@ -15,18 +15,30 @@ public class ComputerResponse : MonoBehaviour
                     { "Failure", "You're taking forever... Hurry up"}
                 };
 
-    private Text _computerResponseText;
+    public Text computerResponseText;
 
     public void Start()
     {
-        _computerResponseText = GetComponent<Text>();
-        _computerResponseText.text = _userInputToComputerResponse["Initial"];
+        computerResponseText = GetComponent<Text>();
     }
 
-    public void Respond (string UserResponse)
+    public void EvaluateSandwich(float score)
     {
-        string computerResponse = _userInputToComputerResponse[UserResponse];
-        _computerResponseText.text = computerResponse;
-	}
-
+        if (score < .5f)
+        {
+            computerResponseText.text = "What the hell is this?";
+        }
+        else if (score < .7f)
+        {
+            computerResponseText.text = "Thanks";
+        }
+        else if (score < .9f)
+        {
+            computerResponseText.text = "Thanks this looks great!";
+        }
+        else
+        {
+            computerResponseText.text = "This is the prettiest sandwich I've ever seen!";
+        }
+    }
 }

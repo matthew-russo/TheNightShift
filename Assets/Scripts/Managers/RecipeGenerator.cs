@@ -43,7 +43,7 @@ public class RecipeGenerator : MonoBehaviour
             currentRecipe += (RandomFuncs.FYShuffle(CheeseChoice)[0]) + ", ";
 
             ToppingsChoice = RandomFuncs.FYShuffle(ToppingsChoice);
-            for (int j = 0; j < Random.Range(0, 3); j++)
+            for (int j = 0; j < Random.Range(1, 3); j++)
             {
                 currentRecipe += ToppingsChoice[j] + ", ";
             }

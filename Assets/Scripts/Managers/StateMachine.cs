@@ -10,6 +10,7 @@ public class StateMachine : Singleton<StateMachine>
         Explore,
         Sandwich,
         Dialog,
+        GameOver
     };
 
     public State currentGameState;
@@ -18,6 +19,6 @@ public class StateMachine : Singleton<StateMachine>
     {
         // TODO: LOAD STATE
 
-        currentGameState = State.Dialog;
+        currentGameState = State.Explore;
     }
 }

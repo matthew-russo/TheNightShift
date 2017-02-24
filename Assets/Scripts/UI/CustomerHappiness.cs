@@ -5,10 +5,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class CustomerHappiness : MonoBehaviour
-{
-    private Image _image;
+{   
+    public Image _image;
     [NonSerialized]
     public bool customerUnhappy = false;
+
+    public Color green;
 
 	void Start ()
 	{
@@ -28,18 +30,22 @@ public class CustomerHappiness : MonoBehaviour
 	    {
 	        _image.color = Color.red;
 	    }
-
-	    if (customerUnhappy)
+	    if (StateMachine.Instance.currentGameState == StateMachine.State.Sandwich)
 	    {
-	        DecreaseFill();
+            DecreaseFill();
+        }
+
+	    if (_image.fillAmount <= 0)
+	    {
+	        StateMachine.Instance.currentGameState = StateMachine.State.GameOver;
 	    }
 	}
 
-    private void DecreaseFill()
+    public void DecreaseFill()
     {
         if (_image.fillAmount > 0)
         {
-            _image.fillAmount -= .001f;
+            _image.fillAmount -= _image.fillAmount / 800f;
         }
     }
 }
