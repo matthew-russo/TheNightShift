@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Script placed on Buttons that take in the User Input and has the customer respond according to the DialogState Script
-/// TODO: Refactor the playerChoice cases so that they have a tag rather than manually putting LOGICAL OR (||) statements
 /// </summary>
 
 public class UserInput : MonoBehaviour, IPointerClickHandler
@@ -18,6 +17,7 @@ public class UserInput : MonoBehaviour, IPointerClickHandler
     public CustomerHappiness customerHappiness;
 
     public string playerChoice;
+    public UserChoices currentChoices;
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -36,7 +36,7 @@ public class UserInput : MonoBehaviour, IPointerClickHandler
 
         // If player chooses any of the negative ending dialog choices, move state to Explore and decrease Customer Happiness
         //
-        else if (playerChoice == "Yup" || playerChoice == "My ass..." || playerChoice == "Not here" || playerChoice == "I don't know" || playerChoice == "Yeah" || playerChoice == "Okay" || playerChoice == "Bite me")
+        else if (currentChoices.tag == "AngryExit")
         {
             StateMachine.Instance.currentGameState = StateMachine.State.Explore;
             customerManager._haveCustomersBeenWiped = false;
@@ -45,7 +45,7 @@ public class UserInput : MonoBehaviour, IPointerClickHandler
 
         // If player chooses any of the positve ending dialog choices, move state to Explore and increase Customer Happiness
         //
-        else if (playerChoice == "*thumbs up*" || playerChoice == "Thanks" || playerChoice == "No problemo" || playerChoice == "Have a good one" || playerChoice == "Enjoy!")
+        else if (currentChoices.tag == "HappyExit")
         {
             StateMachine.Instance.currentGameState = StateMachine.State.Explore;
             customerManager._haveCustomersBeenWiped = false;
