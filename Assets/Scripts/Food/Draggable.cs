@@ -2,8 +2,12 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Collider))]
+/// <summary>
+/// Script that allows Objects to be picked up and moved via Mouse Input
+/// TODO: CHECK ITEMS AS THEY GET SET IN TARGET AREA AND PLAY AUDIO FEEDBACK BASED UPON THAT
+/// </summary>
 
+[RequireComponent(typeof(Collider))]
 public class Draggable : PooledObject
 {
     private Vector3 screenPoint;
@@ -11,7 +15,6 @@ public class Draggable : PooledObject
     private float yPosition;
 
     public GameObject target;
-    private BoxCollider _targetBoxCollider;
     private SandwichMonitor _sandwichMonitor;
     private bool pickedUp = false;
 
@@ -23,12 +26,11 @@ public class Draggable : PooledObject
 
     private void Start()
     {
-        //GetPooledInstance<Draggable>();
         _originRotation = transform.eulerAngles;
         _originPostion = transform.position;
-        _targetBoxCollider = target.GetComponent<BoxCollider>();
         _sandwichMonitor = target.GetComponent<SandwichMonitor>();
     }
+
 
     private void Update()
     {
@@ -36,7 +38,7 @@ public class Draggable : PooledObject
     }
 
     
-    // Allows objects to be dragged around sceen, following the mouse
+    // If a player clicks on a food item, set proper positions to move item, switch a bool, and turn its collider to a trigger so it doesn't knock everything around
     //
     void OnMouseDown()
     {
@@ -50,6 +52,8 @@ public class Draggable : PooledObject
         }
     }
 
+    // Updates a held food item's position with the mouse position
+    //
     void OnMouseDrag()
     {
         if (StateMachine.Instance.currentGameState == StateMachine.State.Sandwich)
@@ -60,6 +64,9 @@ public class Draggable : PooledObject
         }
     }
 
+    // Checks if the item is inside the prep area when mouse is released.
+    // If so, adds that item to the currentSandwich List, if its bread, changes mesh to open shape, disables any further dragging
+    //
     void OnMouseUp()
     {
         if (StateMachine.Instance.currentGameState == StateMachine.State.Sandwich)

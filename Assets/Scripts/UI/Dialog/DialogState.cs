@@ -4,13 +4,19 @@ using Patterns;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Controls tshe dialog flow for User and Customers with two dictionaries.
+/// </summary>
+
 public class DialogState : Singleton<DialogState>
 {
-    public Text computerText;
+    public Text customerText;
     public Text userChoice1;
     public Text userChoice2;
 
-    public Dictionary<string, string> ComputerResponseDictionary = new Dictionary<string, string>()
+    // Dictionary with a key of user responses and their corresponding customer responses
+    //
+    public Dictionary<string, string> CustomerResponseDictionary = new Dictionary<string, string>()
                 {
                     { "Initial", "I want a sandwich"},
                     { "How are you?", "I'm not here for conversation, I want a sandwich"},
@@ -20,6 +26,8 @@ public class DialogState : Singleton<DialogState>
                     { "What do you want on it?", "I want a sandwich" },
                 };
 
+    // Dictionary with the computer text as key and proper user responses as values
+    //
     public Dictionary<string, UserChoices> UserResponses = new Dictionary<string, UserChoices>()
                 {
                     { "I want a sandwich", new UserChoices("How are you?", "What do you want on it?")},
@@ -34,20 +42,25 @@ public class DialogState : Singleton<DialogState>
                     { "What do you want on it?", new UserChoices("one", "two") },
                 };
 
+    // If in dialog state, assign the text of User Buttons based upon the current computer response
+    // If in explore state, reset computer text to starting point
+    //
     private void Update()
     {
         if (StateMachine.Instance.currentGameState == StateMachine.State.Dialog)
         {
-            userChoice1.text = UserResponses[computerText.text].choice1;
-            userChoice2.text = UserResponses[computerText.text].choice2;
+            userChoice1.text = UserResponses[customerText.text].choice1;
+            userChoice2.text = UserResponses[customerText.text].choice2;
         }
         else if (StateMachine.Instance.currentGameState == StateMachine.State.Explore)
         {
-           computerText.text = ComputerResponseDictionary["Initial"];
+           customerText.text = CustomerResponseDictionary["Initial"];
         }
     }
 }
 
+// Class to hold User Response data
+//
 public class UserChoices
 {
     public string choice1;

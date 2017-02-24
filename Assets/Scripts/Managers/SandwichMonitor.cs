@@ -2,27 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Responsible for seeing if sandwich the player made matches what the customer asked for
+/// TODO: Redo check system so that it checks as player adds individual items, give audio feedback
+/// TODO: Fix counting system so that OnTriggerExit removes the object from the currentSandwich List
+/// </summary>
+
 public class SandwichMonitor : MonoBehaviour
 {
     private float sandwichParts;
     public float targetParts;
     public float correctCount;
-    public ComputerResponse _computerResponse;
-    public CustomerHappiness _customerHappiness;
-
-    public RecipeGenerator recipeGenerator;
-
     public string recipe;
 
+    public ComputerResponse _computerResponse;
+    public CustomerHappiness _customerHappiness;
+    public RecipeGenerator recipeGenerator;
     public List<GameObject> currentSandwich = new List<GameObject>();
 
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
+    // While game is in Sandwich state, get the recipe text and number of target ingredient from the recipeGenerator
+    // If the current sandwich has the same number of ingredients as the recipe, change the state to Dialog, move the camera to the customer,
+    // Stop decreasing the Customer Happiness bar, send the results of the sandwich to the ComputerResponse script
+    //
     void Update()
     {
         if (StateMachine.Instance.currentGameState == StateMachine.State.Sandwich)
@@ -31,14 +32,17 @@ public class SandwichMonitor : MonoBehaviour
             targetParts = recipeGenerator.targetParts;
             if (currentSandwich.Count == targetParts)
             {
-                _customerHappiness.customerUnhappy = false;
                 StateMachine.Instance.currentGameState = StateMachine.State.Dialog;
-                _computerResponse.EvaluateSandwich(CheckSandwich());
                 CameraCoroutines.Instance.startCameraToCustomer = true;
+                _customerHappiness.customerUnhappy = false;
+                _computerResponse.EvaluateSandwich(CheckSandwich());
             }
         }
     }
 
+    // Function that compares the player's sandwich to the recipe
+    // Returns a float representing the percentage of ingredients that the player got correct
+    //
     private float CheckSandwich()
     {
         string Output = "";
@@ -50,9 +54,10 @@ public class SandwichMonitor : MonoBehaviour
             {
                 correctCount++;
             }
-            //Destroy(currentSandwich[i]);
-            //Debug.Log(currentSandwich[i].name);
-            //currentSandwich[i].GetComponent<Draggable>().ReturnToPool();
+            if (currentSandwich[i].GetComponent<FoodState>())
+            {
+                currentSandwich[i].GetComponent<FoodState>().setDown = false;
+            }
             currentSandwich[i].transform.position = currentSandwich[i].GetComponent<Draggable>()._originPostion;
         }
         currentSandwich.Clear();
@@ -61,6 +66,8 @@ public class SandwichMonitor : MonoBehaviour
         return ratio;
     }
 
+    // When something enters the prep area's trigger, check if it is a food item and switch a bool so that Draggable script can determine if piece should be added to currentSandwich
+    //
     private void OnTriggerEnter(Collider col)
     {
         if (col.GetComponent<Draggable>() != null)
@@ -69,6 +76,8 @@ public class SandwichMonitor : MonoBehaviour
         }
     }
 
+    // When something exits the prep area's trigger, check if it is a food item and switch a bool so that Draggable script can determine if piece should be added to currentSandwich
+    //
     private void OnTriggerExit(Collider col)
     {
         if (col.GetComponent<Draggable>() != null)

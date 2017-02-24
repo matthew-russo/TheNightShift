@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Handles customer spawning and interaction
+/// TODO: Clean this up, its a bit messy
+/// </summary>
+
 public class CustomerManager : MonoBehaviour
 {
     public bool _isCustomerActive = false;
     public bool _isPlayerInPosition = false;
+    public bool _haveCustomersBeenWiped = false;
     public float _timeUntilNextCustomer = 5f;
+    private float _attentionTimer = 10f;
+
     public GameObject attentionUI;
     public GameObject customerPrefab;
     private GameObject _customerParent;
     public CustomerHappiness customerHappiness;
-
-    public bool _haveCustomersBeenWiped = false;
-
-    private float _timer = 10f;
-
     private Vector3 customerSpawnPos = new Vector3(-1f, 0f, 3f);
 
     private void Start()
@@ -27,6 +30,9 @@ public class CustomerManager : MonoBehaviour
 	void Update () {
 	    if (StateMachine.Instance.currentGameState == StateMachine.State.Explore)
 	    {
+            // If Customers haven't been wiped, destroy all objects with the "Customer" tag, and resets timer & booleans
+            // This is mostly housekeeping
+            //
 	        if (!_haveCustomersBeenWiped)
 	        {
 	            GameObject[] customers = GameObject.FindGameObjectsWithTag("Customer");
@@ -39,25 +45,32 @@ public class CustomerManager : MonoBehaviour
 	            _haveCustomersBeenWiped = true;
 	        }
 
+            // If the customer is spawned and player is inside the trigger by sandiwch part, move to Dialog state and move camera to face customer
+            //
 	        if (_isCustomerActive && _isPlayerInPosition)
 	        {
 	            _timeUntilNextCustomer = 5f;
 	            StateMachine.Instance.currentGameState = StateMachine.State.Dialog;
 	            CameraCoroutines.Instance.startCameraToCustomer = true;
 	        }
+            
+            // If customer is spawned but player is not inside the trigger, spawn the attention UI after _attentionTimer time and start decreasing Customer Happiness
 	        else if (_isCustomerActive && !_isPlayerInPosition)
 	        {
-	            if (_timer <= 0)
+	            if (_attentionTimer <= 0)
 	            {
 	                customerHappiness.DecreaseFill();
                     attentionUI.SetActive(true);
                 }
 	            else
 	            {
-	                _timer -= Time.deltaTime;
+	                _attentionTimer -= Time.deltaTime;
 	            }
 	        }
 	    }
+
+        // If not in Explore state, turn off the Attention UI Symbol
+        //
 	    else
 	    {
 	        if (attentionUI.activeInHierarchy) { 
@@ -65,6 +78,9 @@ public class CustomerManager : MonoBehaviour
 	        }
 	    }
 
+
+        // Timer to spawn Customers
+        //
 	    if (_timeUntilNextCustomer <= 0 && !_isCustomerActive)
 	    {
 	        SpawnCustomer();
@@ -75,13 +91,14 @@ public class CustomerManager : MonoBehaviour
 	    }
 	}
 
+    // Spawns a new customer, set its parent to empty Customers Object, give it the "Customer" tag and switch a bool to keep track of whether a customer is currently spawned
+    //
     private void SpawnCustomer()
     {
         GameObject newCustomer = GameObject.Instantiate(customerPrefab, customerSpawnPos, Quaternion.identity);
         newCustomer.transform.SetParent(_customerParent.transform);
         newCustomer.transform.localPosition = customerSpawnPos;
         newCustomer.tag = "Customer";
-        //attentionUI.SetActive(true);
         _isCustomerActive = true;
     }
 }

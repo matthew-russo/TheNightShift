@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Monitors whether customer and player are in position and lets the Customer Manager know accordingly.
+/// </summary>
+
 public class SendTriggerMessage : MonoBehaviour
 {
     private CustomerManager customerManager;

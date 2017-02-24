@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Controls the Customer Happiness UI bar, changes color based upon length, decreases while sandwich is being made,
+/// Provides public function that decrease fill as well.
+/// </summary>
+
 public class CustomerHappiness : MonoBehaviour
 {   
     public Image _image;

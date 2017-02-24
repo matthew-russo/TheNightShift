@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using Patterns;
 using UnityEngine;
 
+/// <summary>
+/// Script Responsible for camera transitions between game states.
+/// </summary>
+
 public class CameraCoroutines : Singleton<CameraCoroutines>
 {
     public GameObject Panel;
@@ -36,6 +40,8 @@ public class CameraCoroutines : Singleton<CameraCoroutines>
         }
     }
 
+    // Function that starts the three coroutines responsible for moving the camera to focus on the sandiwch.
+    //
     public void CameraToSandwich()
     {
         StartCoroutine(CameraPanToSandwich());
@@ -68,7 +74,8 @@ public class CameraCoroutines : Singleton<CameraCoroutines>
         }
     }
 
-
+    // Function that starts the three coroutines responsible for moving the camera to focus on the customer.
+    //
     public void CameraToCustomer()
     {
         StartCoroutine(CameraPanToCustomer());

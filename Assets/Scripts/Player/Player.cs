@@ -3,10 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Core Player script that enables / disables MouseLook & ControllerMove Scripts
+/// Moves player to Sandwich Station
+/// DEBUG: Press R to Reset Scene
+/// </summary>
+
 public class Player : MonoBehaviour
 {
     private MouseLook _mouseLook;
-    private ControllerMoveDemo _controllerMoveDemo;
+    private ControllerMove _controllerMove;
 
     public CustomerManager customerManager;
 
@@ -15,7 +21,7 @@ public class Player : MonoBehaviour
 	void Start ()
 	{
 	    _mouseLook = GetComponentInChildren<MouseLook>();
-	    _controllerMoveDemo = GetComponent<ControllerMoveDemo>();
+	    _controllerMove = GetComponent<ControllerMove>();
 	}
 	
 	void Update () {
@@ -23,19 +29,19 @@ public class Player : MonoBehaviour
         {
             case StateMachine.State.Dialog:
                 _mouseLook.enabled = false;
-                _controllerMoveDemo.enabled = false;
+                _controllerMove.enabled = false;
                 break;
 
             case StateMachine.State.Sandwich:
                 _mouseLook.enabled = false;
-                _controllerMoveDemo.enabled = false;
+                _controllerMove.enabled = false;
                 StartCoroutine(MoveToSandwichPosition());
                 transform.eulerAngles = new Vector3(transform.eulerAngles.x, 315f, transform.eulerAngles.z);
                 break;
 
             case StateMachine.State.Explore:
                 _mouseLook.enabled = true;
-                _controllerMoveDemo.enabled = true;
+                _controllerMove.enabled = true;
                 break;
         }
 
@@ -45,11 +51,6 @@ public class Player : MonoBehaviour
 	    {
 	        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	    }
-    }
-
-    void OnTriggerEnter(Collider col)
-    {
-        
     }
 
     private IEnumerator MoveToSandwichPosition()

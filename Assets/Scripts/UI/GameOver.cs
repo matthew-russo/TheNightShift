@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Displays game over text
+/// </summary>
+
 public class GameOver : MonoBehaviour
 {
     private Text _text;

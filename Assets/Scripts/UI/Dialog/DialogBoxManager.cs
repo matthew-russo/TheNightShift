@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+
+/// <summary>
+/// Acivates / Deactives Dialog elements based upon Game State
+/// </summary>
 
 public class DialogBoxManager : MonoBehaviour
 {

@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Script that allows player to move with Horizontal/Vertical Axis Input
+/// </summary>
+
 [RequireComponent(typeof (CharacterController))]
-public class ControllerMoveDemo : MonoBehaviour
+public class ControllerMove : MonoBehaviour
 {
     private CharacterController _characterController;
 
@@ -33,5 +37,7 @@ public class ControllerMoveDemo : MonoBehaviour
         }
 
         // 5. Code acceleration and velocity. Make gravity / jump force more gradual
+        //
+        // Not Implemented
     }
 }

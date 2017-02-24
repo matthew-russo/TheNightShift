@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Script that moves camera based upon mouse location
+/// </summary>
+
 // PUT THIS ON MAIN CAMERA
 //
 public class MouseLook : MonoBehaviour

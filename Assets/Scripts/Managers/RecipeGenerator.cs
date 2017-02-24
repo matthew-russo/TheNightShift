@@ -4,10 +4,14 @@ using UnityEngine;
 using RandomizationKit;
 using UnityEngine.UI;
 
+/// <summary>
+/// Generates random recipes, fills a queue with them, and automatically refills queue when empty
+/// Provides a public function to pick a new recipe and display it on the UI Panel;
+/// </summary>
+
 public class RecipeGenerator : MonoBehaviour
 {
     public Queue<string> RecipeQueue = new Queue<string>();
-    public bool isNewRecipeRequested;
 
     private List<string> BreadChoice = new List<string>(new string[] {"White", "Wheat"});
     private List<string> MeatChoice = new List<string>(new string[] {"Salami", "Turkey", "Ham", "Tuna Salad"});
@@ -20,11 +24,15 @@ public class RecipeGenerator : MonoBehaviour
 
     public int targetParts;
 
-    void Start ()
+    // Fills the queue at the beginning of the play session
+    //
+    void Awake ()
     {
         FillRecipeQueue();
     }
 	
+    // If the queue is empty, refill it
+    //
 	void Update () {
 	    if (RecipeQueue.Count == 0)
 	    {
@@ -32,6 +40,8 @@ public class RecipeGenerator : MonoBehaviour
 	    }
 	}
 
+    // Fills a queue with 10 recipes by Randomly shuffling the above food lists and picking items out of the shuffled list.
+    //
     private void FillRecipeQueue()
     {
         for (int i = 0; i < 10; i++)
@@ -63,13 +73,13 @@ public class RecipeGenerator : MonoBehaviour
         }
     }
 
+    // Takes a recipe out of the queue, sets the customers text to the recipe, & split it to give SandwichMonitor script the number of target parts
+    //
     public void PickNextRecipe()
     {
         Recipe = RecipeQueue.Dequeue();
         RecipeText.text = "Make me a : " + Recipe;
         string[] splitRecipe = Recipe.Split(',');
         targetParts = splitRecipe.Length;
-        Debug.Log(Recipe);
-        Debug.Log(targetParts);
     }
 }
