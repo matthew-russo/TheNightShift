@@ -17,6 +17,8 @@ public class DialogBoxManager : MonoBehaviour
 
 	    switch (StateMachine.Instance.currentGameState)
 	    {
+            // When in Dialog state, show user buttons
+            //
             case StateMachine.State.Dialog:
                 if (!Panel.activeInHierarchy || !UserInputButton1.activeInHierarchy || !UserInputButton2.activeInHierarchy) { 
                     Panel.SetActive(true);
@@ -24,7 +26,9 @@ public class DialogBoxManager : MonoBehaviour
                     UserInputButton2.SetActive(true);
                 }
 	            break;
-
+            
+            // When in Sandwich state, show text, but no buttons
+            //
             case StateMachine.State.Sandwich:
                 if (UserInputButton1.activeInHierarchy || UserInputButton2.activeInHierarchy)
 	            {
@@ -33,6 +37,8 @@ public class DialogBoxManager : MonoBehaviour
                 }
 	            break;
 
+            // When in Explore state, show no UI element
+            //
             case StateMachine.State.Explore:
                 if (Panel.activeInHierarchy)
 	            {

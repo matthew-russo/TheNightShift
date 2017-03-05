@@ -21,10 +21,10 @@ public class ControllerMove : MonoBehaviour
         // 1. Grab input from input devices
         float horizontal = Input.GetAxis("Horizontal"); // Left and Right movement
         float vertical = Input.GetAxis("Vertical"); // Up and Down movement
-
+    
         // 2. Plug your values into CharacterController
-        _characterController.Move(transform.forward * Time.deltaTime * vertical * 5f); // Move along forward facing
-        _characterController.Move(transform.right * Time.deltaTime * horizontal * 5f); // Move along forward facing
+        _characterController.Move(transform.forward * Time.deltaTime * vertical * 10f); // Move along forward facing
+        _characterController.Move(transform.right * Time.deltaTime * horizontal * 10f); // Move along forward facing
         //transform.Rotate( 0f, horizontal * Time.deltaTime * 90f, 0f);
 
         // 3. Let's add gravity

@@ -13,7 +13,7 @@ public class CustomerManager : MonoBehaviour
     public bool _isCustomerActive = false;
     public bool _isPlayerInPosition = false;
     public bool _haveCustomersBeenWiped = false;
-    public float _timeUntilNextCustomer = 5f;
+    public float _timeUntilNextCustomer = 7f;
     private float _attentionTimer = 10f;
 
     public GameObject attentionUI;
@@ -41,16 +41,16 @@ public class CustomerManager : MonoBehaviour
 	                GameObject.Destroy(item);
 	            }
 	            _isCustomerActive = false;
-	            _timeUntilNextCustomer = 5f;
-	            _haveCustomersBeenWiped = true;
+                _timeUntilNextCustomer = Random.Range(7f, 30f);
+                _haveCustomersBeenWiped = true;
 	        }
 
             // If the customer is spawned and player is inside the trigger by sandiwch part, move to Dialog state and move camera to face customer
             //
 	        if (_isCustomerActive && _isPlayerInPosition)
 	        {
-	            _timeUntilNextCustomer = 5f;
-	            StateMachine.Instance.currentGameState = StateMachine.State.Dialog;
+                _timeUntilNextCustomer = Random.Range(7f, 30f);
+                StateMachine.Instance.currentGameState = StateMachine.State.Dialog;
 	            CameraCoroutines.Instance.startCameraToCustomer = true;
 	        }
             

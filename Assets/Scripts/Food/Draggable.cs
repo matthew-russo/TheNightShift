@@ -15,28 +15,31 @@ public class Draggable : PooledObject
     private float yPosition;
 
     public GameObject target;
-    private SandwichMonitor _sandwichMonitor;
     private bool pickedUp = false;
+    private bool _hasntMovedYet = true;
 
     [NonSerialized]
     public bool inTriggerArea = false;
 
     private Vector3 _originRotation;
     public Vector3 _originPostion;
+    private AudioSource _audioSource;
+
+    private GameObject _mouseObject;
+    private SpringJoint _springJoint;
 
     private void Start()
     {
         _originRotation = transform.eulerAngles;
         _originPostion = transform.position;
-        _sandwichMonitor = target.GetComponent<SandwichMonitor>();
+        _audioSource = SandwichMonitor.Instance.GetComponent<AudioSource>();
+        _mouseObject = GameObject.FindGameObjectWithTag("Mouse");
     }
-
 
     private void Update()
     {
         transform.eulerAngles = _originRotation;
     }
-
     
     // If a player clicks on a food item, set proper positions to move item, switch a bool, and turn its collider to a trigger so it doesn't knock everything around
     //
@@ -46,7 +49,9 @@ public class Draggable : PooledObject
         {
             screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
             offset = transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
-            yPosition = target.transform.position.y + (_sandwichMonitor.currentSandwich.Count * .05f) + .4f;
+            yPosition = target.transform.position.y + (SandwichMonitor.Instance.currentSandwich.Count * .05f) + .4f;
+            GetComponent<Rigidbody>().detectCollisions = false;
+            
             pickedUp = true;
             GetComponent<Collider>().isTrigger = true;
         }
@@ -58,9 +63,24 @@ public class Draggable : PooledObject
     {
         if (StateMachine.Instance.currentGameState == StateMachine.State.Sandwich)
         {
-            Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-            Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-            transform.position = new Vector3(curPosition.x, yPosition, curPosition.z);
+            if (_hasntMovedYet && Vector3.Distance(transform.position, _mouseObject.transform.position) > 1f)
+            {
+                transform.position = Vector3.Lerp(transform.position, _mouseObject.transform.position, .1f);
+            }
+            else
+            {
+                _hasntMovedYet = false;
+                if (GetComponent<SpringJoint>() == null)
+                {
+                    _springJoint = gameObject.AddComponent<SpringJoint>();
+                    _springJoint.connectedBody = _mouseObject.GetComponent<Rigidbody>();
+                    _springJoint.spring = 200;
+                    _springJoint.damper = .1f;
+                }
+            }
+            //Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
+            //Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
+            //transform.position = new Vector3(curPosition.x, yPosition, curPosition.z);
         }
     }
 
@@ -71,17 +91,26 @@ public class Draggable : PooledObject
     {
         if (StateMachine.Instance.currentGameState == StateMachine.State.Sandwich)
         {
+            Destroy(_springJoint);
+            GetComponent<Rigidbody>().detectCollisions = true;
             GetComponent<Collider>().isTrigger = false;
             if (inTriggerArea)
             {
-                _sandwichMonitor.currentSandwich.Add(gameObject);
-                // TODO: CHECK SANDIWCH PART
-                    // IF GOOD PLAY GOOD SOUND
-                    // IF BAD SAD
+                SandwichMonitor.Instance.currentSandwich.Add(gameObject);
+                if (SandwichMonitor.Instance.recipe.Contains(gameObject.name))
+                {
+                    _audioSource.PlayOneShot(SandwichMonitor.Instance.correct);
+                }
+                else
+                {
+                    _audioSource.PlayOneShot(SandwichMonitor.Instance.wrong);
+                }
                 if (gameObject.name == "White" || gameObject.name == "Wheat")
                 {
                     GetComponent<FoodState>().setDown = true;
                 }
+                
+
                 this.enabled = false;
             }
         }

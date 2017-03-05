@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Patterns;
 using UnityEngine;
 
 /// <summary>
@@ -8,9 +9,8 @@ using UnityEngine;
 /// TODO: Fix counting system so that OnTriggerExit removes the object from the currentSandwich List
 /// </summary>
 
-public class SandwichMonitor : MonoBehaviour
+public class SandwichMonitor : Singleton<SandwichMonitor>
 {
-    private float sandwichParts;
     public float targetParts;
     public float correctCount;
     public string recipe;
@@ -19,6 +19,9 @@ public class SandwichMonitor : MonoBehaviour
     public CustomerHappiness _customerHappiness;
     public RecipeGenerator recipeGenerator;
     public List<GameObject> currentSandwich = new List<GameObject>();
+
+    public AudioClip correct;
+    public AudioClip wrong;
 
     // While game is in Sandwich state, get the recipe text and number of target ingredient from the recipeGenerator
     // If the current sandwich has the same number of ingredients as the recipe, change the state to Dialog, move the camera to the customer,
