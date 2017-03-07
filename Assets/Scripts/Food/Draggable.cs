@@ -63,7 +63,7 @@ public class Draggable : PooledObject
     {
         if (StateMachine.Instance.currentGameState == StateMachine.State.Sandwich)
         {
-            if (_hasntMovedYet && Vector3.Distance(transform.position, _mouseObject.transform.position) > 1f)
+            if (_hasntMovedYet && Vector3.Distance(transform.position, _mouseObject.transform.position) > .5f)
             {
                 transform.position = Vector3.Lerp(transform.position, _mouseObject.transform.position, .1f);
             }

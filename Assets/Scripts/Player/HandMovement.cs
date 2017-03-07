@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Animations;
 using UnityEngine;
 
 public class HandMovement : MonoBehaviour
@@ -41,7 +40,7 @@ public class HandMovement : MonoBehaviour
 
 	        if (_screenPoint.x < Screen.width/2f)
 	        {
-                leftHand.transform.position = new Vector3(hit.point.x, hit.point.y + .3f, hit.point.z);
+                leftHand.transform.position = new Vector3(hit.point.x, hit.point.y + .5f, hit.point.z);
                 leftHand.transform.localPosition = new Vector3(leftHand.transform.localPosition.x, leftHand.transform.localPosition.y, leftHand.transform.localPosition.z -.1f);
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -56,7 +55,7 @@ public class HandMovement : MonoBehaviour
             }
 	        else
 	        {
-                rightHand.transform.position = new Vector3(hit.point.x, hit.point.y + .3f, hit.point.z);
+                rightHand.transform.position = new Vector3(hit.point.x, hit.point.y + .5f, hit.point.z);
                 rightHand.transform.localPosition = new Vector3(rightHand.transform.localPosition.x, rightHand.transform.localPosition.y, rightHand.transform.localPosition.z - .1f);
                 if (Input.GetMouseButtonDown(0))
                 {
