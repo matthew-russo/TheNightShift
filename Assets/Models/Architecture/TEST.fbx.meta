@@ -688,7 +688,7 @@ ModelImporter:
     4300268: pTorus9
     4300270: pTorus11
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:

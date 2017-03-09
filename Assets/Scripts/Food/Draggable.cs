@@ -8,7 +8,7 @@ using System.Collections;
 /// </summary>
 
 [RequireComponent(typeof(Collider))]
-public class Draggable : PooledObject
+public class Draggable : MonoBehaviour
 {
     private Vector3 screenPoint;
     private Vector3 offset;
@@ -49,9 +49,7 @@ public class Draggable : PooledObject
         {
             screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
             offset = transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
-            yPosition = target.transform.position.y + (SandwichMonitor.Instance.currentSandwich.Count * .05f) + .4f;
-            GetComponent<Rigidbody>().detectCollisions = false;
-            
+            yPosition = target.transform.position.y + (SandwichMonitor.Instance.currentSandwich.Count * .03f) +.3f;
             pickedUp = true;
             GetComponent<Collider>().isTrigger = true;
         }
@@ -63,20 +61,10 @@ public class Draggable : PooledObject
     {
         if (StateMachine.Instance.currentGameState == StateMachine.State.Sandwich)
         {
-            if (_hasntMovedYet && Vector3.Distance(transform.position, _mouseObject.transform.position) > .5f)
+            if (Vector3.Distance(transform.position, _mouseObject.transform.position) > .5f)
             {
-                transform.position = Vector3.Lerp(transform.position, _mouseObject.transform.position, .1f);
-            }
-            else
-            {
-                _hasntMovedYet = false;
-                if (GetComponent<SpringJoint>() == null)
-                {
-                    _springJoint = gameObject.AddComponent<SpringJoint>();
-                    _springJoint.connectedBody = _mouseObject.GetComponent<Rigidbody>();
-                    _springJoint.spring = 200;
-                    _springJoint.damper = .1f;
-                }
+                transform.position = Vector3.Lerp(transform.position, _mouseObject.transform.position, .6f);
+                transform.position = new Vector3(transform.position.x, yPosition, transform.position.z);
             }
             //Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
             //Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
@@ -92,7 +80,6 @@ public class Draggable : PooledObject
         if (StateMachine.Instance.currentGameState == StateMachine.State.Sandwich)
         {
             Destroy(_springJoint);
-            GetComponent<Rigidbody>().detectCollisions = true;
             GetComponent<Collider>().isTrigger = false;
             if (inTriggerArea)
             {

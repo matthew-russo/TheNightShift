@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Patterns;
 using UnityEngine;
+using RandomizationKit;
 using UnityEngine.UI;
 
 /// <summary>
@@ -8,24 +10,18 @@ using UnityEngine.UI;
 /// TODO: Clean this up, its a bit messy
 /// </summary>
 
-public class CustomerManager : MonoBehaviour
+public class CustomerManager : Singleton<CustomerManager>
 {
-    public bool _isCustomerActive = false;
-    public bool _isPlayerInPosition = false;
+    public bool isCustomerInPosition = false;
+    public bool isPlayerInPosition = false;
     public bool _haveCustomersBeenWiped = false;
     public float _timeUntilNextCustomer = 7f;
     private float _attentionTimer = 10f;
 
     public GameObject attentionUI;
     public GameObject customerPrefab;
-    private GameObject _customerParent;
-    public CustomerHappiness customerHappiness;
-    private Vector3 customerSpawnPos = new Vector3(-1f, 0f, 3f);
-
-    private void Start()
-    {
-        _customerParent = GameObject.Find("Customers");
-    }
+    public GameObject[] _customerParent;
+    public CustomerHappiness customerHappiness; 
 
 	void Update () {
 	    if (StateMachine.Instance.currentGameState == StateMachine.State.Explore)
@@ -33,29 +29,31 @@ public class CustomerManager : MonoBehaviour
             // If Customers haven't been wiped, destroy all objects with the "Customer" tag, and resets timer & booleans
             // This is mostly housekeeping
             //
-	        if (!_haveCustomersBeenWiped)
-	        {
-	            GameObject[] customers = GameObject.FindGameObjectsWithTag("Customer");
-	            foreach (GameObject item in customers)
-	            {
-	                GameObject.Destroy(item);
-	            }
-	            _isCustomerActive = false;
-                _timeUntilNextCustomer = Random.Range(7f, 30f);
-                _haveCustomersBeenWiped = true;
-	        }
+	        //if (!_haveCustomersBeenWiped)
+	        //{
+	        //    GameObject[] customers = GameObject.FindGameObjectsWithTag("Customer");
+	        //    foreach (GameObject item in customers)
+	        //    {
+	        //        GameObject.Destroy(item);
+	        //    }
+	        //    _isCustomerActive = false;
+         //       _timeUntilNextCustomer = Random.Range(7f, 30f);
+         //       _haveCustomersBeenWiped = true;
+	        //}
 
             // If the customer is spawned and player is inside the trigger by sandiwch part, move to Dialog state and move camera to face customer
             //
-	        if (_isCustomerActive && _isPlayerInPosition)
+	        if (isCustomerInPosition && isPlayerInPosition)
 	        {
                 _timeUntilNextCustomer = Random.Range(7f, 30f);
                 StateMachine.Instance.currentGameState = StateMachine.State.Dialog;
+	            isCustomerInPosition = false;
+	            isPlayerInPosition = false;
 	            CameraCoroutines.Instance.startCameraToCustomer = true;
 	        }
             
             // If customer is spawned but player is not inside the trigger, spawn the attention UI after _attentionTimer time and start decreasing Customer Happiness
-	        else if (_isCustomerActive && !_isPlayerInPosition)
+	        else if (isCustomerInPosition && !isPlayerInPosition)
 	        {
 	            if (_attentionTimer <= 0)
 	            {
@@ -81,7 +79,7 @@ public class CustomerManager : MonoBehaviour
 
         // Timer to spawn Customers
         //
-	    if (_timeUntilNextCustomer <= 0 && !_isCustomerActive)
+	    if (_timeUntilNextCustomer <= 0 && !isCustomerInPosition && CustomerNavigation.customerCount <= 0)
 	    {
 	        SpawnCustomer();
 	    }
@@ -95,10 +93,11 @@ public class CustomerManager : MonoBehaviour
     //
     private void SpawnCustomer()
     {
-        GameObject newCustomer = GameObject.Instantiate(customerPrefab, customerSpawnPos, Quaternion.identity);
-        newCustomer.transform.SetParent(_customerParent.transform);
-        newCustomer.transform.localPosition = customerSpawnPos;
-        newCustomer.tag = "Customer";
-        _isCustomerActive = true;
+        RandomFuncs.FYShuffle(_customerParent);
+        GameObject spawnParent = _customerParent[0];
+        GameObject newCustomer = GameObject.Instantiate(customerPrefab, spawnParent.transform.position, Quaternion.identity);
+        newCustomer.transform.SetParent(spawnParent.transform);
+        newCustomer.transform.localPosition = spawnParent.transform.position;
+        _timeUntilNextCustomer = Random.Range(5f, 30f);
     }
 }

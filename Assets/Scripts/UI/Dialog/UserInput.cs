@@ -19,6 +19,8 @@ public class UserInput : MonoBehaviour, IPointerClickHandler
     public string playerChoice;
     public UserChoices currentChoices;
 
+    public GameObject customerGameObject;
+
     public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log(gameObject.name);
@@ -38,8 +40,11 @@ public class UserInput : MonoBehaviour, IPointerClickHandler
         //
         else if (currentChoices.tag == "AngryExit")
         {
+            customerGameObject = GameObject.FindGameObjectWithTag("CustomerParent");
+            customerGameObject.GetComponent<CustomerNavigation>().timeToLeave = true;
+            customerGameObject.transform.GetChild(0).tag = "Inactive";
+            customerGameObject.transform.GetChild(1).tag = "Inactive";
             StateMachine.Instance.currentGameState = StateMachine.State.Explore;
-            customerManager._haveCustomersBeenWiped = false;
             customerHappiness._image.fillAmount -= .15f;
         }
 
@@ -47,8 +52,11 @@ public class UserInput : MonoBehaviour, IPointerClickHandler
         //
         else if (currentChoices.tag == "HappyExit")
         {
+            customerGameObject = GameObject.FindGameObjectWithTag("CustomerParent");
+            customerGameObject.GetComponent<CustomerNavigation>().timeToLeave = true;
+            customerGameObject.transform.GetChild(0).tag = "Inactive";
+            customerGameObject.transform.GetChild(1).tag = "Inactive";
             StateMachine.Instance.currentGameState = StateMachine.State.Explore;
-            customerManager._haveCustomersBeenWiped = false;
             customerHappiness._image.fillAmount += .25f;
         }
 

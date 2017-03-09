@@ -23,6 +23,8 @@ public class SandwichMonitor : Singleton<SandwichMonitor>
     public AudioClip correct;
     public AudioClip wrong;
 
+    private GameObject customerGameObject;
+
     // While game is in Sandwich state, get the recipe text and number of target ingredient from the recipeGenerator
     // If the current sandwich has the same number of ingredients as the recipe, change the state to Dialog, move the camera to the customer,
     // Stop decreasing the Customer Happiness bar, send the results of the sandwich to the ComputerResponse script
@@ -64,7 +66,7 @@ public class SandwichMonitor : Singleton<SandwichMonitor>
             currentSandwich[i].transform.position = currentSandwich[i].GetComponent<Draggable>()._originPostion;
         }
         currentSandwich.Clear();
-        float ratio = correctCount / targetParts;
+        float ratio = correctCount / targetParts;   
         correctCount = 0;
         return ratio;
     }

@@ -14,7 +14,7 @@ public class RecipeGenerator : MonoBehaviour
     public Queue<string> RecipeQueue = new Queue<string>();
 
     private List<string> BreadChoice = new List<string>(new string[] {"White", "Wheat"});
-    private List<string> MeatChoice = new List<string>(new string[] {"Salami", "Turkey", "Ham", "Tuna Salad"});
+    private List<string> MeatChoice = new List<string>(new string[] {"Salami", "Turkey", "Ham"});
     private List<string> CheeseChoice = new List<string>(new string[] {"Provolone", "Cheddar", "Pepper Jack", "Swiss"});
     private List<string> ToppingsChoice = new List<string>(new string[] {"Lettuce", "Tomato", "Banana Peppers", "Pickles", "Onions", "Jalepenos"});
     private List<string> DressingsChoice = new List<string>(new string[] {"Mayonaise", "Ketchup", "Mustard", "Ranch", "Buffalo"});

@@ -17,7 +17,7 @@ public class MouseObject : MonoBehaviour
         _ray = Camera.main.ScreenPointToRay(_screenPoint);
         Physics.Raycast(_ray, out hit);
 
-        transform.position = new Vector3(hit.point.x, hit.point.y + 1.2f, hit.point.z);
+        transform.position = new Vector3(hit.point.x, 3f, hit.point.z);
 
 	    if (StateMachine.Instance.currentGameState == StateMachine.State.Dialog)
 	    {
@@ -25,7 +25,7 @@ public class MouseObject : MonoBehaviour
 	    }
 	    else
 	    {
-	        Cursor.visible = false;
+	        Cursor.visible = true;
 	    }
     }
 }

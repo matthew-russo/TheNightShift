@@ -28,13 +28,13 @@ public class ControllerMove : MonoBehaviour
         //transform.Rotate( 0f, horizontal * Time.deltaTime * 90f, 0f);
 
         // 3. Let's add gravity
-        //_characterController.Move(Physics.gravity);
+        //_characterController.Move(Physics.gravity/5f);
 
         // 4. Press space to jump!
-        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump")) && _characterController.isGrounded)
-        {
-            _characterController.Move(new Vector3(0f, 10f, 0f));
-        }
+        //if ((Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump")) && _characterController.isGrounded)
+        //{
+        //    _characterController.Move(new Vector3(0f, 10f, 0f));
+        //}
 
         // 5. Code acceleration and velocity. Make gravity / jump force more gradual
         //
