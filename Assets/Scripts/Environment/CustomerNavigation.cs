@@ -36,7 +36,7 @@ public class CustomerNavigation : MonoBehaviour
 
     private void Update()
     {
-        if (CustomerManager.Instance.isCustomerInPosition == true && !triggered)
+        if (_agent.remainingDistance < .005f == true && !triggered)
         {
             triggered = true;
             _animator.SetBool("Walking", false);
@@ -60,7 +60,7 @@ public class CustomerNavigation : MonoBehaviour
         int iterations = 70;
         while (iterations > 0)
         {
-            transform.Rotate(0f, -1f, 0f);
+            transform.Rotate(0f, -.5f, 0f);
             iterations--;
             yield return new WaitForSeconds(0.01f);
         }

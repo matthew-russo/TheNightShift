@@ -31,9 +31,6 @@ public class Draggable : MonoBehaviour
     public string prefabSize;
     private GameObject prefab;
 
-    private Material materialOnThiSObject;
-    private Mesh meshOnThisObject;
-
     private void Start()
     {
         _target = GameObject.FindGameObjectWithTag("Target");
@@ -45,10 +42,6 @@ public class Draggable : MonoBehaviour
         _sandwichParent = GameObject.FindGameObjectWithTag("SandwichParent");
 
         prefab = Resources.Load(prefabSize) as GameObject;
-        materialOnThiSObject = GetComponent<MeshRenderer>().material;
-        meshOnThisObject = GetComponent<MeshFilter>().mesh;
-
-        Debug.Log("GAMEOBJECT NAME : " + gameObject.name + ", " + _originScale);
     }
 
     private void Update()
@@ -106,6 +99,7 @@ public class Draggable : MonoBehaviour
                 if (gameObject.name == "White" || gameObject.name == "Wheat")
                 {
                     GetComponent<MeshFilter>().mesh = GetComponent<FoodState>().afterMesh;
+                    GetComponent<MeshRenderer>().material = GetComponent<FoodState>().afterMaterial;
                 }
                 SetSandwichUp();
                 transform.localPosition = _originPostion;
@@ -131,7 +125,7 @@ public class Draggable : MonoBehaviour
         }
         foreach (MeshRenderer item in meshRendererChild)
         {
-            item.material = materialOnThiSObject;
+            item.material = GetComponent<MeshRenderer>().material;
         }
     }
 }
