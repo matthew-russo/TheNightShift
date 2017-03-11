@@ -10,13 +10,15 @@ public class FoodState : MonoBehaviour
 {
     public bool setDown;
 
-    public Mesh beforeMesh;
     public Mesh afterMesh;
+    public Material afterMaterial;
     private MeshFilter _meshFilter;
+    private MeshRenderer _meshRenderer;
 
 	void Start ()
 	{
 	    _meshFilter = GetComponent<MeshFilter>();
+	    _meshRenderer = GetComponent<MeshRenderer>();
 	}
 	
 	void Update ()
@@ -24,10 +26,7 @@ public class FoodState : MonoBehaviour
 	    if (setDown)
 	    {
 	        _meshFilter.mesh = afterMesh;
-	    }
-	    else
-	    {
-	        _meshFilter.mesh = beforeMesh;
+	        _meshRenderer.material = afterMaterial;
 	    }
 	}
 }
