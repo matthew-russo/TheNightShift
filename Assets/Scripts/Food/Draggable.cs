@@ -4,7 +4,6 @@ using System.Collections;
 
 /// <summary>
 /// Script that allows Objects to be picked up and moved via Mouse Input
-/// TODO: CHECK ITEMS AS THEY GET SET IN TARGET AREA AND PLAY AUDIO FEEDBACK BASED UPON THAT
 /// </summary>
 
 [RequireComponent(typeof(Collider))]
@@ -14,7 +13,7 @@ public class Draggable : MonoBehaviour
     private Vector3 offset;
     private float yPosition;
 
-    public GameObject target;
+    private GameObject _target;
     private bool pickedUp = false;
     private bool _hasntMovedYet = true;
 
@@ -23,17 +22,33 @@ public class Draggable : MonoBehaviour
 
     private Vector3 _originRotation;
     public Vector3 _originPostion;
+    private Vector3 _originScale;
     private AudioSource _audioSource;
 
     private GameObject _mouseObject;
-    private SpringJoint _springJoint;
+
+    private GameObject _sandwichParent;
+    public string prefabSize;
+    private GameObject prefab;
+
+    private Material materialOnThiSObject;
+    private Mesh meshOnThisObject;
 
     private void Start()
     {
+        _target = GameObject.FindGameObjectWithTag("Target");
         _originRotation = transform.eulerAngles;
         _originPostion = transform.position;
+        _originScale = transform.localScale;
         _audioSource = SandwichMonitor.Instance.GetComponent<AudioSource>();
         _mouseObject = GameObject.FindGameObjectWithTag("Mouse");
+        _sandwichParent = GameObject.FindGameObjectWithTag("SandwichParent");
+
+        prefab = Resources.Load(prefabSize) as GameObject;
+        materialOnThiSObject = GetComponent<MeshRenderer>().material;
+        meshOnThisObject = GetComponent<MeshFilter>().mesh;
+
+        Debug.Log("GAMEOBJECT NAME : " + gameObject.name + ", " + _originScale);
     }
 
     private void Update()
@@ -49,7 +64,7 @@ public class Draggable : MonoBehaviour
         {
             screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
             offset = transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
-            yPosition = target.transform.position.y + (SandwichMonitor.Instance.currentSandwich.Count * .03f) +.3f;
+            yPosition = _target.transform.position.y + (SandwichMonitor.Instance.currentSandwich.Count * .03f) +.3f;
             pickedUp = true;
             GetComponent<Collider>().isTrigger = true;
         }
@@ -66,9 +81,6 @@ public class Draggable : MonoBehaviour
                 transform.position = Vector3.Lerp(transform.position, _mouseObject.transform.position, .6f);
                 transform.position = new Vector3(transform.position.x, yPosition, transform.position.z);
             }
-            //Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-            //Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-            //transform.position = new Vector3(curPosition.x, yPosition, curPosition.z);
         }
     }
 
@@ -79,7 +91,6 @@ public class Draggable : MonoBehaviour
     {
         if (StateMachine.Instance.currentGameState == StateMachine.State.Sandwich)
         {
-            Destroy(_springJoint);
             GetComponent<Collider>().isTrigger = false;
             if (inTriggerArea)
             {
@@ -94,12 +105,33 @@ public class Draggable : MonoBehaviour
                 }
                 if (gameObject.name == "White" || gameObject.name == "Wheat")
                 {
-                    GetComponent<FoodState>().setDown = true;
+                    GetComponent<MeshFilter>().mesh = GetComponent<FoodState>().afterMesh;
                 }
-                
+                SetSandwichUp();
+                transform.localPosition = _originPostion;
+                transform.localEulerAngles = _originRotation;
 
-                this.enabled = false;
+                //this.enabled = false;
             }
+        }
+    }
+
+    void SetSandwichUp()
+    {
+        GameObject sandwichPart = Instantiate(prefab);
+        sandwichPart.transform.SetParent(_sandwichParent.transform);
+        sandwichPart.transform.localPosition = new Vector3(sandwichPart.transform.position.x, sandwichPart.transform.position.y + (SandwichMonitor.Instance.currentSandwich.Count * .02f) +.15f);
+        MeshFilter[] meshFilterChild = sandwichPart.GetComponentsInChildren<MeshFilter>();
+        MeshRenderer[] meshRendererChild = sandwichPart.GetComponentsInChildren<MeshRenderer>();
+        foreach (MeshFilter item in meshFilterChild)
+        {
+            item.mesh = GetComponent<MeshFilter>().mesh;
+            item.transform.localScale = _originScale;
+            item.transform.localEulerAngles = transform.localEulerAngles;
+        }
+        foreach (MeshRenderer item in meshRendererChild)
+        {
+            item.material = materialOnThiSObject;
         }
     }
 }

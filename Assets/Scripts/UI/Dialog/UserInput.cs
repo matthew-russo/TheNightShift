@@ -23,7 +23,6 @@ public class UserInput : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log(gameObject.name);
         playerChoice = transform.GetChild(0).GetComponent<Text>().text;
         
         // If player picked this choice, move to the Sandwich State, pick a recipe out of the queue, & move the camera to the sandwich

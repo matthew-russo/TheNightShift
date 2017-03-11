@@ -79,9 +79,12 @@ public class CustomerManager : Singleton<CustomerManager>
 
         // Timer to spawn Customers
         //
-	    if (_timeUntilNextCustomer <= 0 && !isCustomerInPosition && CustomerNavigation.customerCount <= 0)
+	    if (_timeUntilNextCustomer <= 0)
 	    {
-	        SpawnCustomer();
+	        if (CustomerNavigation.customerCount <= 0)
+	        {
+                SpawnCustomer();
+            }
 	    }
 	    else
 	    {

@@ -18,7 +18,7 @@ public class CustomerNavigation : MonoBehaviour
 
     public static int customerCount = 0;
 
-    ~CustomerNavigation()
+    void OnDestroy()
     {
         customerCount--;
     }
